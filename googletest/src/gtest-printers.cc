@@ -272,7 +272,7 @@ static void PrintCharsAsStringTo(
       // disambiguate.
       *os << "\" " << kQuoteBegin;
     }
-    is_previous_hex = PrintAsStringLiteralTo(cur, os) == kHexEscape;
+    is_previous_hex = testing::internal::PrintAsStringLiteralTo(cur, os) == kHexEscape;
   }
   *os << "\"";
 }
@@ -293,7 +293,7 @@ static void UniversalPrintCharArray(
   // it's '\0', such that the output matches the string literal as it's
   // written in the source code.
   if (len > 0 && begin[len - 1] == '\0') {
-    PrintCharsAsStringTo(begin, len - 1, os);
+    testing::internal::PrintCharsAsStringTo(begin, len - 1, os);
     return;
   }
 
@@ -301,7 +301,7 @@ static void UniversalPrintCharArray(
   //    const char kFoo[] = { 'f', 'o', 'o' };
   // we must print the entire array.  We also print a message to indicate
   // that the array is not NUL-terminated.
-  PrintCharsAsStringTo(begin, len, os);
+  testing::internal::PrintCharsAsStringTo(begin, len, os);
   *os << " (no terminating NUL)";
 }
 

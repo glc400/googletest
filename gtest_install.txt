@@ -1,0 +1,51 @@
+安装googletest
+
+过程中可能会报错：
+"/home/develop/googletest/googletest/src/gtest-printers.cc", line 296.5: 1540-0274 (S) The name lookup for "PrintCharsAsStringTo" did not find a declaration.
+"/home/develop/googletest/googletest/src/gtest-printers.cc", line 296.5: 1540-0274 (S) The name lookup for "PrintCharsAsStringTo" did not find a declaration.
+"/home/develop/googletest/googletest/src/gtest-printers.cc", line 275.23: 1540-0274 (S) The name lookup for "PrintAsStringLiteralTo" did not find a declaration."/home/develop/googletest/googletest/src/gtest-printers.cc", line 262.13: 1540-0700 (I) The previous message was produced while processing "testing::internal::PrintCharsAsStringTo<char>(const char *, size_t, ostream *)".
+"/home/develop/googletest/googletest/src/gtest-printers.cc", line 275.23: 1540-0274 (S) The name lookup for "PrintAsStringLiteralTo" did not find a declaration
+修改PrintCharsAsStringTo(begin, len, os);为testing::internal::PrintCharsAsStringTo(begin, len, os);，其他错误类似
+之后执行以下命令：
+cd /home/develop/googletest/
+mkdir build; cd build
+cmake -DCMAKE_INSTALL_PREFIX=/home/develop/local/ ..
+make  && make install
+
+新建文件TestRedisGtest.cpp：
+#include "gtest/gtest.h"
+
+int Add(int a, int b)
+{
+    return a + b;
+}
+
+TEST(AddTest, MyAddTest)
+{
+    EXPECT_EQ(2, Add(1, 1));
+    EXPECT_EQ(6, Add(2, 4));
+}
+
+int main(int argc, char** argv)
+{
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
+
+编译程序:
+xlC_r -q64 -g -I/home/develop/local/include -c TestRedisGtest.cpp -o TestRedisGtest.o
+xlC_r -o test_gtest TestRedisGtest.o -L/home/develop/local/lib -lgtest
+
+运行程序：
+-> % ./test_gtest
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from AddTest
+[ RUN      ] AddTest.MyAddTest
+[       OK ] AddTest.MyAddTest (0 ms)
+[----------] 1 test from AddTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (1 ms total)
+[  PASSED  ] 1 test.
